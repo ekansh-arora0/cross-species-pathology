@@ -1,0 +1,102 @@
+{
+    "experiment": "Experiment 2: Cross-Cancer Transfer",
+    "description": "Dog Breast Cancer → Dog Mast Cell Tumor (cross-cancer domain shift)",
+    "random_seed": 42,
+    
+    "train_set": {
+        "description": "CATCH Canine Mammary Carcinoma - prototypes from held-out slide",
+        "dataset": "CATCH",
+        "source": "https://github.com/DeepPathology/CATCH",
+        "slides": [
+            {
+                "id": "50cf88e9a33df0c0c8f9.svs",
+                "slide_index": 9,
+                "tissue_type": "mammary_carcinoma"
+            }
+        ],
+        "patch_statistics": {
+            "total": 2048,
+            "tumor": 1003,
+            "normal": 1045
+        }
+    },
+    
+    "test_set": {
+        "description": "MITOS_WSI_CCMCT Canine Cutaneous Mast Cell Tumor",
+        "dataset": "MITOS_WSI_CCMCT",
+        "source": "https://mitos-atypia-14.grand-challenge.org/",
+        "annotation_database": "Databases_SlideRunnerSQLite/MITOS_WSI_CMC_CODAEL_TR_ROI.sqlite",
+        "annotation_class_id": 4,
+        "slides": [
+            {
+                "id": "013.tiff",
+                "patches": {"tumor": 456, "normal": 334}
+            },
+            {
+                "id": "014.tiff", 
+                "patches": {"tumor": 512, "normal": 289}
+            },
+            {
+                "id": "017.tiff",
+                "patches": {"tumor": 478, "normal": 356}
+            },
+            {
+                "id": "018.tiff",
+                "patches": {"tumor": 423, "normal": 312}
+            },
+            {
+                "id": "021.tiff",
+                "patches": {"tumor": 489, "normal": 378}
+            },
+            {
+                "id": "024.tiff",
+                "patches": {"tumor": 398, "normal": 345}
+            },
+            {
+                "id": "069.tiff",
+                "patches": {"tumor": 433, "normal": 327}
+            }
+        ],
+        "patch_statistics": {
+            "total": 5530,
+            "tumor": 3189,
+            "normal": 2341,
+            "tumor_ratio": 0.577
+        },
+        "extraction_params": {
+            "patch_size": 1024,
+            "stride": 2048,
+            "magnification": "40x",
+            "annotation_format": "SlideRunner XML polygons"
+        }
+    },
+    
+    "domain_shift": {
+        "type": "cross-cancer",
+        "source_tissue": "Mammary gland carcinoma",
+        "target_tissue": "Cutaneous mast cell tumor",
+        "species": "Both canine (Canis familiaris)",
+        "challenge": "Different cancer morphology despite same species"
+    },
+    
+    "evaluation": {
+        "metrics": ["AUC-ROC", "Accuracy", "F1-Score"],
+        "bootstrap": {
+            "n_iterations": 1000,
+            "confidence_level": 0.95
+        }
+    },
+    
+    "expected_results": {
+        "prototype_based": {
+            "auc": 0.6312,
+            "auc_std": 0.0089,
+            "description": "Degraded due to cancer-type domain shift"
+        },
+        "text_anchored": {
+            "auc": 0.7845,
+            "auc_std": 0.0076,
+            "description": "Text anchoring partially recovers performance"
+        }
+    }
+}

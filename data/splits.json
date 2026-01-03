@@ -1,0 +1,164 @@
+{
+    "description": "Train/test splits for all datasets used in the paper. Splits are performed at the slide level to prevent data leakage.",
+    "version": "1.0.0",
+    "paper_reference": "Lost in Translation: How Language Re-Aligns Vision for Cross-Species Pathology",
+    "random_seed": 42,
+    
+    "catch_canine_breast": {
+        "description": "CATCH Canine Mammary Carcinoma Dataset - slide-level split",
+        "source": "https://github.com/DeepPathology/CATCH",
+        "license": "CC BY-NC-SA 4.0",
+        "total_slides": 21,
+        
+        "train_slides": [
+            "50cf88e9a33df0c0c8f9.svs"
+        ],
+        "test_slides": [
+            "022857018aa597374b6c.svs",
+            "084383c18b9060880e82.svs",
+            "13528f1921d4f1f15511.svs",
+            "2191a7aa287ce1d5dbc0.svs",
+            "2d56d1902ca533a5b509.svs",
+            "3d3d04eca056556b0b26.svs",
+            "460906c0b1fe17ea5354.svs",
+            "4eee7b944ad5e46c60ce.svs",
+            "69a02453620ade0edefd.svs",
+            "72c93e042d0171a61012.svs",
+            "a8773be388e12df89edd.svs",
+            "b1bdee8e5e3372174619.svs",
+            "c4b95da36e32993289cb.svs",
+            "d0423ef9a648bb66a763.svs",
+            "d37ab62158945f22deed.svs",
+            "d7a8af121d7d4f3fbf01.svs",
+            "da18e7b9846e9d38034c.svs",
+            "deb768e5efb9d1dcbc13.svs",
+            "e09512d530d933e436d5.svs",
+            "fa4959e484beec77543b.svs"
+        ],
+        
+        "train_patches": {
+            "total": 2048,
+            "tumor": 1003,
+            "normal": 1045
+        },
+        "test_patches": {
+            "total": 20191,
+            "tumor": 12857,
+            "normal": 7334
+        },
+        
+        "split_rationale": "Single slide (50cf88e9a33df0c0c8f9.svs) selected as training/prototype source - most balanced tumor/normal distribution. Simulates extreme low-data scenario for cross-species transfer.",
+        
+        "preprocessing": {
+            "patch_size": 1024,
+            "stride": 2048,
+            "magnification": "40x",
+            "stain_normalization": "macenko",
+            "resize_to": 336
+        }
+    },
+    
+    "mitos_wsi_ccmct_mast_cell": {
+        "description": "MITOS_WSI_CCMCT Canine Cutaneous Mast Cell Tumor Dataset",
+        "source": "https://mitos-atypia-14.grand-challenge.org/",
+        "license": "Research use only",
+        "total_slides": 32,
+        "annotated_slides_for_evaluation": 7,
+        
+        "test_slides": [
+            "013.tiff",
+            "014.tiff", 
+            "017.tiff",
+            "018.tiff",
+            "021.tiff",
+            "024.tiff",
+            "069.tiff"
+        ],
+        
+        "test_patches": {
+            "total": 5530,
+            "tumor": 3189,
+            "normal": 2341
+        },
+        
+        "annotation_source": "Databases_SlideRunnerSQLite/MITOS_WSI_CMC_CODAEL_TR_ROI.sqlite",
+        "annotation_class": "agreedClass = 4 (tumor region)",
+        "notes": "Used for cross-cancer evaluation only (no training). Tumor polygons extracted from SlideRunner SQLite annotations."
+    },
+    
+    "tcga_brca": {
+        "description": "TCGA Breast Invasive Carcinoma - Human breast cancer from GDC Portal",
+        "source": "https://portal.gdc.cancer.gov/",
+        "project_id": "TCGA-BRCA",
+        "data_category": "Biospecimen",
+        "data_type": "Slide Image",
+        "experimental_strategy": "Diagnostic Slide",
+        
+        "total_diagnostic_slides": 1098,
+        "slides_used": "All diagnostic slides (tumor tissue)",
+        "label_assumption": "All patches from diagnostic tumor slides labeled as tumor",
+        
+        "subtypes_included": [
+            "Infiltrating Ductal Carcinoma",
+            "Infiltrating Lobular Carcinoma"
+        ],
+        
+        "patches_extracted": {
+            "patch_size": 1024,
+            "stride": 512,
+            "magnification": "40x",
+            "tissue_threshold": 0.5,
+            "total_patches": 245000
+        },
+        
+        "notes": "Used as human source domain for cross-species transfer. Patches extracted from tumor regions only."
+    },
+    
+    "few_shot_experiments": {
+        "description": "Configurations for few-shot learning experiments (Table 4)",
+        "base_dataset": "catch_canine_breast test set",
+        "total_available_patches": 22239,
+        
+        "fractions": {
+            "1%": {"n_samples": 222, "description": "~222 patches"},
+            "3%": {"n_samples": 667, "description": "~667 patches"},
+            "5%": {"n_samples": 1111, "description": "~1111 patches"},
+            "10%": {"n_samples": 2224, "description": "~2224 patches"},
+            "15%": {"n_samples": 3336, "description": "~3336 patches"},
+            "20%": {"n_samples": 4448, "description": "~4448 patches"}
+        },
+        
+        "n_runs_per_fraction": 5,
+        "random_seeds": [42, 123, 456, 789, 1011],
+        "stratified_sampling": true,
+        "notes": "Few-shot samples drawn from combined train+test patches for supervised baseline comparison"
+    },
+    
+    "evaluation_config": {
+        "n_bootstrap": 1000,
+        "confidence_level": 0.95,
+        "random_seed": 42,
+        "metrics": ["AUC-ROC", "Accuracy", "F1-Score", "Precision", "Recall"]
+    },
+    
+    "experiments": {
+        "exp1_same_cancer": {
+            "name": "Same-Cancer Transfer",
+            "source": "catch_canine_breast (train)",
+            "target": "catch_canine_breast (test)",
+            "description": "Dog breast → Dog breast (baseline)"
+        },
+        "exp2_cross_cancer": {
+            "name": "Cross-Cancer Transfer", 
+            "source": "catch_canine_breast (train)",
+            "target": "mitos_wsi_ccmct_mast_cell (test)",
+            "description": "Dog breast → Dog mast cell tumor"
+        },
+        "exp3_cross_species": {
+            "name": "Cross-Species Transfer",
+            "source": "tcga_brca (all patches)",
+            "target": "catch_canine_breast (test)",
+            "description": "Human breast → Dog breast (main contribution)"
+        }
+    }
+}

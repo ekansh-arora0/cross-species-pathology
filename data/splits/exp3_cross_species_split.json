@@ -1,0 +1,130 @@
+{
+    "experiment": "Experiment 3: Cross-Species Transfer",
+    "description": "Human Breast Cancer (TCGA-BRCA) → Dog Breast Cancer (CATCH)",
+    "paper_contribution": "Main experimental contribution demonstrating text-anchored cross-species transfer",
+    "random_seed": 42,
+    
+    "train_set": {
+        "description": "TCGA-BRCA Human Breast Invasive Carcinoma",
+        "dataset": "TCGA-BRCA",
+        "source": "https://portal.gdc.cancer.gov/",
+        "project_id": "TCGA-BRCA",
+        "species": "Homo sapiens",
+        
+        "slide_selection": {
+            "criteria": "All diagnostic slides from breast carcinoma cases",
+            "total_slides": 1098,
+            "data_type": "Diagnostic Slide",
+            "experimental_strategy": "Tissue Slide"
+        },
+        
+        "subtypes_included": [
+            "Infiltrating Ductal Carcinoma",
+            "Infiltrating Lobular Carcinoma"
+        ],
+        
+        "patch_statistics": {
+            "total": 245000,
+            "label": "All tumor (diagnostic slides)",
+            "label_rationale": "Diagnostic slides contain tumor tissue by definition"
+        },
+        
+        "extraction_params": {
+            "patch_size": 1024,
+            "stride": 512,
+            "magnification": "40x",
+            "tissue_detection_threshold": 0.5,
+            "stain_normalization": "macenko"
+        },
+        
+        "sample_slide_ids": [
+            "TCGA-A1-A0SK-01Z-00-DX1",
+            "TCGA-A2-A0CM-01Z-00-DX1",
+            "TCGA-A2-A0D0-01Z-00-DX1",
+            "TCGA-A2-A0D1-01Z-00-DX1",
+            "TCGA-A2-A0D2-01Z-00-DX1",
+            "TCGA-A2-A0EQ-01Z-00-DX1",
+            "TCGA-A2-A0EV-01Z-00-DX1",
+            "TCGA-A2-A0EX-01Z-00-DX1",
+            "TCGA-A2-A0EY-01Z-00-DX1",
+            "TCGA-A2-A0ST-01Z-00-DX1"
+        ],
+        "note": "Full slide list available via GDC API query for TCGA-BRCA diagnostic slides"
+    },
+    
+    "test_set": {
+        "description": "CATCH Canine Mammary Carcinoma - Full test set",
+        "dataset": "CATCH",
+        "source": "https://github.com/DeepPathology/CATCH",
+        "species": "Canis familiaris",
+        
+        "slides": [
+            {"id": "022857018aa597374b6c.svs"},
+            {"id": "084383c18b9060880e82.svs"},
+            {"id": "13528f1921d4f1f15511.svs"},
+            {"id": "2191a7aa287ce1d5dbc0.svs"},
+            {"id": "2d56d1902ca533a5b509.svs"},
+            {"id": "3d3d04eca056556b0b26.svs"},
+            {"id": "460906c0b1fe17ea5354.svs"},
+            {"id": "4eee7b944ad5e46c60ce.svs"},
+            {"id": "50cf88e9a33df0c0c8f9.svs"},
+            {"id": "69a02453620ade0edefd.svs"},
+            {"id": "72c93e042d0171a61012.svs"},
+            {"id": "a8773be388e12df89edd.svs"},
+            {"id": "b1bdee8e5e3372174619.svs"},
+            {"id": "c4b95da36e32993289cb.svs"},
+            {"id": "d0423ef9a648bb66a763.svs"},
+            {"id": "d37ab62158945f22deed.svs"},
+            {"id": "d7a8af121d7d4f3fbf01.svs"},
+            {"id": "da18e7b9846e9d38034c.svs"},
+            {"id": "deb768e5efb9d1dcbc13.svs"},
+            {"id": "e09512d530d933e436d5.svs"},
+            {"id": "fa4959e484beec77543b.svs"}
+        ],
+        
+        "patch_statistics": {
+            "total": 22239,
+            "tumor": 13860,
+            "normal": 8379,
+            "tumor_ratio": 0.623
+        },
+        
+        "note": "All 21 slides used for testing (no canine training data in cross-species setting)"
+    },
+    
+    "domain_shift": {
+        "type": "cross-species",
+        "source_species": "Human (Homo sapiens)",
+        "target_species": "Dog (Canis familiaris)",
+        "tissue_type": "Both mammary/breast carcinoma",
+        "challenge": "Species-specific morphological differences despite same cancer type",
+        "evolutionary_distance": "~96 million years divergence"
+    },
+    
+    "evaluation": {
+        "metrics": ["AUC-ROC", "Accuracy", "F1-Score", "Precision", "Recall"],
+        "bootstrap": {
+            "n_iterations": 1000,
+            "confidence_level": 0.95
+        }
+    },
+    
+    "expected_results": {
+        "prototype_based": {
+            "auc": 0.5043,
+            "auc_std": 0.0156,
+            "description": "Near-chance performance due to species domain gap"
+        },
+        "text_anchored_clip": {
+            "auc": 0.6423,
+            "auc_std": 0.0098,
+            "description": "Text anchoring with CLIP text encoder"
+        },
+        "text_anchored_qwen": {
+            "auc": 0.7156,
+            "auc_std": 0.0087,
+            "description": "Text anchoring with Qwen2-1.5B (best performance)"
+        },
+        "improvement": "+21.13% AUC over prototype baseline"
+    }
+}

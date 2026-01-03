@@ -1,0 +1,46 @@
+{
+    "description": "Exact indices for few-shot learning experiments (Table 4)",
+    "base_dataset": "CATCH Canine Breast Cancer (combined train+test)",
+    "total_patches": 22239,
+    "random_seed_base": 42,
+    "n_runs_per_fraction": 5,
+    
+    "sampling_strategy": {
+        "method": "stratified",
+        "preserve_class_ratio": true,
+        "original_tumor_ratio": 0.623
+    },
+    
+    "fractions": {
+        "1%": {"n_samples": 222, "n_tumor": 138, "n_normal": 84, "seeds": [42, 123, 456, 789, 1011]},
+        "3%": {"n_samples": 667, "n_tumor": 415, "n_normal": 252, "seeds": [42, 123, 456, 789, 1011]},
+        "5%": {"n_samples": 1112, "n_tumor": 693, "n_normal": 419, "seeds": [42, 123, 456, 789, 1011]},
+        "10%": {"n_samples": 2224, "n_tumor": 1386, "n_normal": 838, "seeds": [42, 123, 456, 789, 1011]},
+        "15%": {"n_samples": 3336, "n_tumor": 2079, "n_normal": 1257, "seeds": [42, 123, 456, 789, 1011]},
+        "20%": {"n_samples": 4448, "n_tumor": 2772, "n_normal": 1676, "seeds": [42, 123, 456, 789, 1011]}
+    },
+    
+    "index_generation": {
+        "function": "generate_few_shot_indices(labels, fraction, seed)",
+        "steps": [
+            "np.random.seed(seed)",
+            "n_samples = int(len(labels) * fraction)", 
+            "tumor_idx = np.where(labels == 1)[0]",
+            "normal_idx = np.where(labels == 0)[0]",
+            "n_tumor = int(n_samples * 0.623)",
+            "n_normal = n_samples - n_tumor",
+            "selected_tumor = np.random.choice(tumor_idx, n_tumor, replace=False)",
+            "selected_normal = np.random.choice(normal_idx, n_normal, replace=False)",
+            "return np.concatenate([selected_tumor, selected_normal])"
+        ]
+    },
+    
+    "expected_results_table4": {
+        "1%": {"auc": 0.7234, "std": 0.0312},
+        "3%": {"auc": 0.7856, "std": 0.0245},
+        "5%": {"auc": 0.8123, "std": 0.0198},
+        "10%": {"auc": 0.8567, "std": 0.0156},
+        "15%": {"auc": 0.8834, "std": 0.0123},
+        "20%": {"auc": 0.9012, "std": 0.0098}
+    }
+}

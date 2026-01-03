@@ -1,0 +1,154 @@
+{
+    "description": "Complete train/test splits for all datasets. Splits are at slide-level to prevent data leakage.",
+    "version": "1.0.0",
+    "paper_reference": "Lost in Translation: How Language Re-Aligns Vision for Cross-Species Pathology",
+    "random_seed": 42,
+    
+    "catch_canine_breast": {
+        "description": "CATCH Canine Mammary Carcinoma Dataset",
+        "source": "https://github.com/DeepPathology/CATCH",
+        "license": "CC BY-NC-SA 4.0",
+        
+        "slide_level_split": {
+            "train_slides": ["50cf88e9a33df0c0c8f9.svs"],
+            "test_slides": [
+                "022857018aa597374b6c.svs",
+                "084383c18b9060880e82.svs",
+                "13528f1921d4f1f15511.svs",
+                "2191a7aa287ce1d5dbc0.svs",
+                "2d56d1902ca533a5b509.svs",
+                "3d3d04eca056556b0b26.svs",
+                "460906c0b1fe17ea5354.svs",
+                "4eee7b944ad5e46c60ce.svs",
+                "69a02453620ade0edefd.svs",
+                "72c93e042d0171a61012.svs",
+                "a8773be388e12df89edd.svs",
+                "b1bdee8e5e3372174619.svs",
+                "c4b95da36e32993289cb.svs",
+                "d0423ef9a648bb66a763.svs",
+                "d37ab62158945f22deed.svs",
+                "d7a8af121d7d4f3fbf01.svs",
+                "da18e7b9846e9d38034c.svs",
+                "deb768e5efb9d1dcbc13.svs",
+                "e09512d530d933e436d5.svs",
+                "fa4959e484beec77543b.svs"
+            ]
+        },
+        
+        "patch_counts": {
+            "train": {"total": 2048, "tumor": 1003, "normal": 1045},
+            "test": {"total": 20191, "tumor": 12857, "normal": 7334}
+        },
+        
+        "preprocessing": {
+            "patch_size": 1024,
+            "stride": 2048,
+            "magnification": "40x",
+            "stain_normalization": "macenko",
+            "resize_to": 336
+        }
+    },
+    
+    "mitos_wsi_ccmct": {
+        "description": "MITOS_WSI_CCMCT Canine Cutaneous Mast Cell Tumor Dataset",
+        "source": "https://mitos-atypia-14.grand-challenge.org/",
+        "license": "Research use only",
+        
+        "slide_level_split": {
+            "test_slides": ["013", "014", "017", "018", "021", "024", "069"]
+        },
+        
+        "patch_counts": {
+            "test": {"total": 5530, "tumor": 3189, "normal": 2341}
+        },
+        
+        "patch_ids": {
+            "test_tumor": {
+                "file": "mast_cell_tumor_patches.txt",
+                "count": 3189
+            },
+            "test_normal": {
+                "file": "mast_cell_normal_patches.txt", 
+                "count": 2341
+            }
+        },
+        
+        "annotation_format": "XML polygons",
+        "notes": "Used for cross-cancer evaluation only (no training)"
+    },
+    
+    "tcga_brca": {
+        "description": "TCGA Breast Invasive Carcinoma from GDC Portal",
+        "source": "https://portal.gdc.cancer.gov/",
+        "project_id": "TCGA-BRCA",
+        "license": "Open Access (dbGaP)",
+        
+        "slide_level_split": {
+            "total_diagnostic_slides": 1098,
+            "train_slides_file": "tcga_train_slides.txt",
+            "train_count": 878,
+            "test_slides_file": "tcga_test_slides.txt",
+            "test_count": 220,
+            "stratification": "by_subtype"
+        },
+        
+        "subtypes_included": [
+            "Infiltrating Ductal Carcinoma",
+            "Infiltrating Lobular Carcinoma"
+        ],
+        
+        "patch_extraction": {
+            "method": "tissue_detection",
+            "patch_size": 1024,
+            "stride": 512,
+            "tissue_threshold": 0.5,
+            "magnification": "40x"
+        },
+        
+        "label_source": "All patches from diagnostic tumor slides labeled as tumor",
+        "notes": "Used as human source domain for cross-species transfer"
+    },
+    
+    "few_shot_splits": {
+        "description": "Indices for few-shot learning experiments",
+        "base_dataset": "catch_canine_breast",
+        "fractions": {
+            "1%": {
+                "n_samples": 222,
+                "indices_file": "fewshot_1pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            },
+            "3%": {
+                "n_samples": 667,
+                "indices_file": "fewshot_3pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            },
+            "5%": {
+                "n_samples": 1111,
+                "indices_file": "fewshot_5pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            },
+            "10%": {
+                "n_samples": 2027,
+                "indices_file": "fewshot_10pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            },
+            "15%": {
+                "n_samples": 3041,
+                "indices_file": "fewshot_15pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            },
+            "20%": {
+                "n_samples": 4054,
+                "indices_file": "fewshot_20pct_indices.json",
+                "seeds": [42, 123, 456, 789, 1011]
+            }
+        }
+    },
+    
+    "cross_validation": {
+        "n_bootstrap": 1000,
+        "confidence_level": 0.95,
+        "random_seed": 42
+    }
+}

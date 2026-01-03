@@ -1,0 +1,8 @@
+slide_id,split,n_tumor_patches,n_normal_patches,total_patches,dataset
+013.tiff,test,456,334,790,mast_cell
+014.tiff,test,512,289,801,mast_cell
+017.tiff,test,478,356,834,mast_cell
+018.tiff,test,423,312,735,mast_cell
+021.tiff,test,489,378,867,mast_cell
+024.tiff,test,398,345,743,mast_cell
+069.tiff,test,433,327,760,mast_cell
