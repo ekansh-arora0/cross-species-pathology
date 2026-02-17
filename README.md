@@ -2,7 +2,7 @@
 
 Zero-shot cross-species pathology classification using text-anchored visual representations.
 
-**Paper**: *Lost in Translation: How Language Re-Aligns Vision for Cross-Species Pathology*
+**Paper**: *Semantic Anchoring Recovers Latent Cross-Species Generalization in Pathology Foundation Models*
 
 ## Results
 
