@@ -118,7 +118,7 @@ See `requirements.txt` for full list.
 
 ```bibtex
 @article{crossspecies2026,
-  title={Lost in Translation: How Language Re-Aligns Vision for Cross-Species Pathology},
+  title={Semantic Anchoring Recovers Latent Cross-Species Generalization in Pathology Foundation Models},
   year={2026}
 }
 ```
