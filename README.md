@@ -1,6 +1,6 @@
 # Cross-Species Pathology Transfer
 
-Zero-shot cross-species pathology classification using text-anchored visual representations.
+A zero-shot translation tool to run human pathology AI models on any OOD type of tissue
 
 **Paper**: *Semantic Anchoring Recovers Latent Cross-Species Generalization in Pathology Foundation Models*
 
